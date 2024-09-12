@@ -27,8 +27,6 @@ const Dashboard = () => {
     { key: 'RPHAI', label: 'RPHAI' },
     { key: 'PCC', label: 'PCC' },
     { key: 'ERE', label: 'ERE' },
-    { key: 'RxGE', label: 'RxGE' },
-    { key: 'RxCIE', label: 'RxCIE' },
   ];
 
   const getTrendIcon = (trend) => {
@@ -77,10 +75,10 @@ const Dashboard = () => {
         },
       }}
     >
-      <Layout className="min-h-screen">
-        <Content className="p-4 sm:p-6">
-          <Card className="max-w-full md:max-w-7xl mx-auto shadow-lg rounded-lg overflow-hidden">
-            <div className="p-4 border-b flex justify-between items-center flex-wrap gap-4">
+      <Layout className="h-auto pt-5">
+        <Content className="sm:p-6">
+          <Card className="max-w-full md:max-w-7xl mx-auto shadow-lg rounded-lg">
+            <div className="p-2 border-b flex justify-between items-center flex-wrap gap-4">
               <h1 className="font-semibold text-xl">
                 Retail Pharmacy Applications Dashboard
               </h1>
@@ -91,16 +89,16 @@ const Dashboard = () => {
                   checkedChildren={<Moon className='mt-[2.8px]' size={16} />}
                   unCheckedChildren={<Sun  size={16} />}
                 />
-                <Button onClick={() => setOpen(!open)} type="primary">
+                {/* <Button onClick={() => setOpen(!open)} type="primary">
                   {open ? 'See Less' : 'See More'}
-                </Button>
+                </Button> */}
               </Space>
             </div>
 
             <div className="p-4 sm:p-6">
               <Row gutter={[16, 16]} className="mb-6">
                 {Header.map((item, index) => (
-                  <Col key={index} xs={24} sm={12} lg={6}>
+                  <Col key={index} xs={24} sm={12} lg={4}>
                     <Card className="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
                       <Statistic
                         title={<Text className="text-lg font-semibold">{item.name}</Text>}
@@ -114,6 +112,7 @@ const Dashboard = () => {
 
               {open ? (
                 <Layout className="min-h-80 bg-transparent">
+                  
                   <Sider
                     collapsible
                     collapsed={collapsed}
@@ -123,6 +122,7 @@ const Dashboard = () => {
                     zeroWidthTriggerStyle={{ top: '64px' }}
                     className="responsive-sider"
                   >
+
                     <Menu
                       mode="inline"
                       selectedKeys={[selectedMenu]}
@@ -131,13 +131,14 @@ const Dashboard = () => {
                       className="h-full border-r-0"
                     />
                   </Sider>
-                  <Content className="p-4 sm:p-6">
+                  <Content className=" sm:p-6">
                     <Card className="shadow-lg rounded-lg overflow-hidden">
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
                         <Title level={4} className="m-0">{selectedMenu}</Title>
                         <Button type="primary" icon={<HeartOutlined />} danger>
                           Support Metrics
                         </Button>
+                        
                       </div>
                       <Table
                         dataSource={data}
@@ -155,8 +156,9 @@ const Dashboard = () => {
                       <Col key={index} xs={24} sm={12} md={8} lg={6}>
                         <Card
                           hoverable
+                          onClick={() => setOpen(true)} 
                           className="h-full"
-                          bodyStyle={{
+                          style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
@@ -164,7 +166,7 @@ const Dashboard = () => {
                           }}
                         >
                           <Space>
-                            <Text className="text-xl" strong>{item.name}</Text>
+                            <Text  className="text-xl" strong>{item.name}</Text>
                             <Circle className='h-4 w-4' fill={item.status} />
                           </Space>
                         </Card>

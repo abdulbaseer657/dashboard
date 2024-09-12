@@ -32,7 +32,7 @@ export const Header = [
   },
   {
     id: 4,
-    name: "Total Scheduled Fill",
+    name: "Total Scheduled",
     value: 1138899,
     icon: CalendarDays,
   },
