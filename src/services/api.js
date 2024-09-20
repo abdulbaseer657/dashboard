@@ -9,7 +9,6 @@ import {
   Store,
 } from "lucide-react";
 
-
 export const Header = [
   {
     id: 1,
@@ -50,22 +49,42 @@ export const Header = [
   },
 ];
 
-  export const fetchDashboardBodyData = [
-    { name: "RxC", status: "green" },
-    { name: "TPMS", status: "green" },
-    { name: "Intake", status: "green" },
-    { name: "CiQ", status: "yellow" },
-    { name: "RxBE", status: "red" },
-    { name: "RPHAl", status: "green" },
-    { name: "PCC", status: "green" },
-    { name: "ERE", status: "green" },
-    { name: "RxGE", status: "green" },
-    { name: "RxCIE", status: "green" },
-  ];
+export const fetchDashboardBodyData = [
+  { name: "RxC", status: "green", disabled: true },
+  { name: "TPMS", status: "green", disabled: true },
+  { name: "Intake", status: "green", disabled: true },
+  { name: "CiQ", status: "yellow", disabled: false },
+  { name: "RxBE", status: "red", disabled: true },
+  { name: "RPHAl", status: "green", disabled: false },
+  { name: "PCC", status: "green", disabled: false },
+  { name: "ERE", status: "green", disabled: true },
+  { name: "RxGE", status: "green", disabled: true },
+  { name: "RxCIE", status: "green", disabled: true },
+];
 
-  export const fetchRxBEData = () => [
-    { key: 1, Capability: "Billing Transaction (B1)", SuccessRate: "80", Trend: "green" },
-    { key: 2, Capability: "Reversal Transaction (B2)", SuccessRate: "100", Trend: "blue" },
-    { key: 3, Capability: "Eligibility Transactions (E1)", SuccessRate: "75", Trend: "green" },
-    { key: 4, Capability: "RxConnect Auto Retry", SuccessRate: "25", Trend: "red" },
-  ];
+export const fetchRxBEData = () => [
+  {
+    key: 1,
+    Capability: "Billing Transaction (B1)",
+    SuccessRate: "80",
+    Trend: "green",
+  },
+  {
+    key: 2,
+    Capability: "Reversal Transaction (B2)",
+    SuccessRate: "100",
+    Trend: "blue",
+  },
+  {
+    key: 3,
+    Capability: "Eligibility Transactions (E1)",
+    SuccessRate: "75",
+    Trend: "green",
+  },
+  {
+    key: 4,
+    Capability: "RxConnect Auto Retry",
+    SuccessRate: "25",
+    Trend: "red",
+  },
+];

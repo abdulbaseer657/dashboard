@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Row, Col, Typography, Space, Statistic, Table, Button, Menu, Switch, ConfigProvider, theme } from 'antd';
-import { fetchDashboardBodyData, fetchRxBEData, Header } from '../services/api';
+import {
+  Layout,
+  Card,
+  Row,
+  Col,
+  Typography,
+  Space,
+  Table,
+  Button,
+  Menu,
+  Switch,
+  ConfigProvider,
+  theme,
+} from 'antd';
+import { fetchDashboardBodyData, fetchRxBEData } from '../services/api';
 import { Circle, Sun, Moon } from 'lucide-react';
-import { ArrowDownOutlined, ArrowUpOutlined, HeartOutlined, MenuOutlined } from '@ant-design/icons';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  HeartOutlined,
+  ArrowRightOutlined,
+} from '@ant-design/icons';
+import argusLogo from '../assets/argus.jpg';
 
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -16,24 +35,26 @@ const Dashboard = () => {
 
   useEffect(() => {
     document.body.classList.toggle('dark', isDarkMode);
+    document.body.style.backgroundColor = isDarkMode ? '#000000' : '#ffffff'; // Set the body background color based on dark mode
   }, [isDarkMode]);
 
   const menuItems = [
-    { key: 'RxBE', label: 'RxBE' },
-    { key: 'RxC', label: 'RxC' },
-    { key: 'TPMS', label: 'TPMS' },
-    { key: 'Intake', label: 'Intake' },
-    { key: 'CiQ', label: 'CiQ' },
-    { key: 'RPHAI', label: 'RPHAI' },
-    { key: 'PCC', label: 'PCC' },
-    { key: 'ERE', label: 'ERE' },
+    { key: 'RPHAI', label: 'RPHAI',disabled: false },
+    { key: 'CiQ', label: 'CiQ',disabled: false },
+    { key: 'PCC', label: 'PCC',disabled: false },
+    { key: 'RxBE', label: 'RxBE', disabled: true },
+    { key: 'RxC', label: 'RxC', disabled: true },
+    { key: 'TPMS', label: 'TPMS', disabled: true },
+    { key: 'Intake', label: 'Intake', disabled: true },
+    { key: 'ERE', label: 'ERE', disabled: true },
   ];
 
   const getTrendIcon = (trend) => {
     switch (trend) {
       case 'green':
-      case 'blue':
         return <ArrowUpOutlined className="text-green-500" />;
+      case 'blue':
+        return <ArrowRightOutlined className="text-blue-500" />;
       case 'red':
         return <ArrowDownOutlined className="text-red-500" />;
       default:
@@ -71,48 +92,47 @@ const Dashboard = () => {
       theme={{
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
         token: {
-          colorPrimary: '#1890ff',
+          colorPrimary: isDarkMode ? '#001529' : '#1890ff',
         },
       }}
     >
-      <Layout className="h-auto pt-5">
-        <Content className="sm:p-6">
-          <Card className="max-w-full md:max-w-7xl mx-auto shadow-lg rounded-lg">
+      <Layout
+        className={`min-h-screen h-auto pt-5 ${isDarkMode ? 'bg-black text-white' : 'bg-white text-black'}`}
+        style={{
+          backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+        }}
+      >
+        <Content
+          className="sm:p-6 min-h-full"
+          style={{ backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff' }}
+        >
+          <Card
+            className={`max-w-full md:max-w-7xl mx-auto shadow-lg rounded-lg ${isDarkMode ? 'bg-[#1f1f1f] text-white' : 'bg-white text-black'}`}
+            style={{ backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff' }}
+          >
             <div className="p-2 border-b flex justify-between items-center flex-wrap gap-4">
-              <h1 className="font-semibold text-xl">
-                Retail Pharmacy Applications Dashboard
-              </h1>
+              <div className="flex items-center gap-2">
+                <img src={argusLogo} alt="Argus Logo" className="h-12 w-auto" /> {/* Increased logo size */}
+                <h1 className={`font-semibold text-2xl ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  Argus Business KPI
+                </h1>
+              </div>
               <Space>
                 <Switch
                   checked={isDarkMode}
                   onChange={() => setIsDarkMode(!isDarkMode)}
-                  checkedChildren={<Moon className='mt-[2.8px]' size={16} />}
-                  unCheckedChildren={<Sun  size={16} />}
+                  checkedChildren={<Moon className="mt-[2.8px]" size={16} />}
+                  unCheckedChildren={<Sun size={16} />}
                 />
-                {/* <Button onClick={() => setOpen(!open)} type="primary">
-                  {open ? 'See Less' : 'See More'}
-                </Button> */}
+                <Button onClick={() => setOpen(!open)} type="primary">
+                  {open ? 'Status' : 'Drill Down'}
+                </Button>
               </Space>
             </div>
 
             <div className="p-4 sm:p-6">
-              <Row gutter={[16, 16]} className="mb-6">
-                {Header.map((item, index) => (
-                  <Col key={index} xs={24} sm={12} lg={4}>
-                    <Card className="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
-                      <Statistic
-                        title={<Text className="text-lg font-semibold">{item.name}</Text>}
-                        value={item.value}
-                        valueStyle={{ color: '#1890ff' }}
-                      />
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-
               {open ? (
                 <Layout className="min-h-80 bg-transparent">
-                  
                   <Sider
                     collapsible
                     collapsed={collapsed}
@@ -120,25 +140,34 @@ const Dashboard = () => {
                     breakpoint="lg"
                     collapsedWidth="0"
                     zeroWidthTriggerStyle={{ top: '64px' }}
-                    className="responsive-sider"
+                    className={`responsive-sider ${isDarkMode ? 'bg-[#141414]' : ''}`}
                   >
-
                     <Menu
                       mode="inline"
                       selectedKeys={[selectedMenu]}
                       onSelect={({ key }) => setSelectedMenu(key)}
                       items={menuItems}
-                      className="h-full border-r-0"
+                      className={`h-full border-r-0 ${isDarkMode ? 'bg-[#141414] text-white' : ''}`}
+                      style={{
+                        '--antd-menu-disabled-item-text-color': 'rgba(255, 255, 255, 0.5)', // Grayed-out text in dark mode
+                        '--antd-menu-disabled-item-text-color-light': 'rgba(0, 0, 0, 0.3)', // Grayed-out text in light mode
+                      }}
                     />
                   </Sider>
-                  <Content className=" sm:p-6">
-                    <Card className="shadow-lg rounded-lg overflow-hidden">
+                  <Content
+                    className="sm:p-6"
+                    style={{ backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff' }}
+                  >
+                    <Card
+                      className={`shadow-lg rounded-lg overflow-hidden ${isDarkMode ? 'bg-[#1f1f1f] text-white' : ''}`}
+                    >
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-                        <Title level={4} className="m-0">{selectedMenu}</Title>
+                        <Title level={4} className={`m-0 ${isDarkMode ? 'text-white' : ''}`}>
+                          {selectedMenu}
+                        </Title>
                         <Button type="primary" icon={<HeartOutlined />} danger>
                           Support Metrics
                         </Button>
-                        
                       </div>
                       <Table
                         dataSource={data}
@@ -150,24 +179,39 @@ const Dashboard = () => {
                   </Content>
                 </Layout>
               ) : (
-                <Card className="mb-6">
+                <Card className={`mb-6 ${isDarkMode ? 'bg-[#1f1f1f] text-white' : ''}`}>
                   <Row gutter={[16, 16]}>
                     {fetchDashboardBodyData.map((item, index) => (
                       <Col key={index} xs={24} sm={12} md={8} lg={6}>
                         <Card
-                          hoverable
-                          onClick={() => setOpen(true)} 
-                          className="h-full"
+                          hoverable={!item.disabled}
+                          onClick={() => !item.disabled && setOpen(true)}
+                          className={`h-full ${item.disabled ? 'bg-gray-200 text-gray-500' : ''}`}
                           style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            height: '100%'
+                            height: '100%',
+                            pointerEvents: item.disabled ? 'none' : 'auto',
+                            opacity: item.disabled ? 0.5 : 1,
+                            cursor: item.disabled ? 'not-allowed' : 'pointer',
+                            backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff',
                           }}
                         >
                           <Space>
-                            <Text  className="text-xl" strong>{item.name}</Text>
-                            <Circle className='h-4 w-4' fill={item.status} />
+                            <Text className={`text-xl ${item.disabled ? 'text-gray-500' : ''}`} strong>
+                              {item.name}
+                            </Text>
+                            <Circle
+                              className="h-4 w-4"
+                              fill={
+                                item.status === 'green'
+                                  ? 'green'
+                                  : item.status === 'red'
+                                  ? 'red'
+                                  : 'yellow'
+                              }
+                            />
                           </Space>
                         </Card>
                       </Col>
