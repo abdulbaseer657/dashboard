@@ -22,6 +22,7 @@ import {
   ArrowRightOutlined,
 } from '@ant-design/icons';
 import argusLogo from '../assets/argus.jpg';
+import { Sparklines, SparklinesLine } from 'react-sparklines';
 
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -29,7 +30,7 @@ const { defaultAlgorithm, darkAlgorithm } = theme;
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState('RxBE');
+  const [selectedMenu, setSelectedMenu] = useState('RPHAI');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -39,9 +40,9 @@ const Dashboard = () => {
   }, [isDarkMode]);
 
   const menuItems = [
-    { key: 'RPHAI', label: 'RPHAI',disabled: false },
-    { key: 'CiQ', label: 'CiQ',disabled: false },
-    { key: 'PCC', label: 'PCC',disabled: false },
+    { key: 'RPHAI', label: 'RPHAI', disabled: false },
+    { key: 'CiQ', label: 'CiQ', disabled: false },
+    { key: 'PCC', label: 'PCC', disabled: false },
     { key: 'RxBE', label: 'RxBE', disabled: true },
     { key: 'RxC', label: 'RxC', disabled: true },
     { key: 'TPMS', label: 'TPMS', disabled: true },
@@ -72,9 +73,23 @@ const Dashboard = () => {
       render: (text) => <span className="font-medium">{text}</span>,
     },
     {
-      title: 'Success Rate',
-      dataIndex: 'SuccessRate',
-      key: 'SuccessRate',
+      title: 'YTD',
+      dataIndex: 'YTD',
+      key: 'YTD',
+      render: (text) => <span className="font-medium">{text}%</span>,
+      align: 'right',
+    },
+    {
+      title: '24 hrs',
+      dataIndex: 'Last24hrs',
+      key: 'Last24hrs',
+      render: (text) => <span className="font-medium">{text}%</span>,
+      align: 'right',
+    },
+    {
+      title: 'Current Trend',
+      dataIndex: 'CurrentTrend',
+      key: 'CurrentTrend',
       render: (text) => <span className="font-medium">{text}%</span>,
       align: 'right',
     },
@@ -83,6 +98,17 @@ const Dashboard = () => {
       dataIndex: 'Trend',
       key: 'Trend',
       render: (trend) => getTrendIcon(trend),
+      align: 'center',
+    },
+    {
+      title: 'Graph',
+      dataIndex: 'GraphData',
+      key: 'GraphData',
+      render: (graphData, record) => (
+        <Sparklines data={graphData}>
+          <SparklinesLine color={record.Trend === 'red' ? 'red' : 'green'} />
+        </Sparklines>
+      ),
       align: 'center',
     },
   ];
@@ -112,7 +138,7 @@ const Dashboard = () => {
           >
             <div className="p-2 border-b flex justify-between items-center flex-wrap gap-4">
               <div className="flex items-center gap-2">
-                <img src={argusLogo} alt="Argus Logo" className="h-12 w-auto" /> {/* Increased logo size */}
+                <img src={argusLogo} alt="Argus Logo" className="h-12 w-auto" />
                 <h1 className={`font-semibold text-2xl ${isDarkMode ? 'text-white' : 'text-black'}`}>
                   Argus Business KPI
                 </h1>
@@ -149,8 +175,8 @@ const Dashboard = () => {
                       items={menuItems}
                       className={`h-full border-r-0 ${isDarkMode ? 'bg-[#141414] text-white' : ''}`}
                       style={{
-                        '--antd-menu-disabled-item-text-color': 'rgba(255, 255, 255, 0.5)', // Grayed-out text in dark mode
-                        '--antd-menu-disabled-item-text-color-light': 'rgba(0, 0, 0, 0.3)', // Grayed-out text in light mode
+                        '--antd-menu-disabled-item-text-color': 'rgba(255, 255, 255, 0.5)',
+                        '--antd-menu-disabled-item-text-color-light': 'rgba(0, 0, 0, 0.3)',
                       }}
                     />
                   </Sider>
@@ -183,38 +209,39 @@ const Dashboard = () => {
                   <Row gutter={[16, 16]}>
                     {fetchDashboardBodyData.map((item, index) => (
                       <Col key={index} xs={24} sm={12} md={8} lg={6}>
-                        <Card
-                          hoverable={!item.disabled}
-                          onClick={() => !item.disabled && setOpen(true)}
-                          className={`h-full ${item.disabled ? 'bg-gray-200 text-gray-500' : ''}`}
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            height: '100%',
-                            pointerEvents: item.disabled ? 'none' : 'auto',
-                            opacity: item.disabled ? 0.5 : 1,
-                            cursor: item.disabled ? 'not-allowed' : 'pointer',
-                            backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff',
-                          }}
-                        >
-                          <Space>
-                            <Text className={`text-xl ${item.disabled ? 'text-gray-500' : ''}`} strong>
-                              {item.name}
-                            </Text>
-                            <Circle
-                              className="h-4 w-4"
-                              fill={
-                                item.status === 'green'
-                                  ? 'green'
-                                  : item.status === 'red'
-                                  ? 'red'
-                                  : 'yellow'
-                              }
-                            />
-                          </Space>
-                        </Card>
-                      </Col>
+                      <Card
+                        hoverable={!item.disabled}
+                        onClick={() => !item.disabled && setOpen(true)}
+                        className={`h-full relative ${item.disabled ? 'bg-gray-200 text-gray-500' : ''}`} // Added "relative"
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: '100%',
+                          pointerEvents: item.disabled ? 'none' : 'auto',
+                          opacity: item.disabled ? 0.5 : 1,
+                          cursor: item.disabled ? 'not-allowed' : 'pointer',
+                          backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff',
+                        }}
+                      >
+                        <Space direction="vertical" align="center" size="small">
+                          <Text className={`text-xl ${item.disabled ? 'text-gray-500' : ''}`} strong>
+                            {item.name}
+                          </Text>
+                        </Space>
+                        {/* Move the circle to bottom-right */}
+                        <Circle
+                          className="absolute bottom-3 right-3"
+                          fill={
+                            item.status === 'green'
+                              ? 'green'
+                              : item.status === 'red'
+                              ? 'red'
+                              : 'yellow'
+                          }
+                        />
+                      </Card>
+                    </Col>
                     ))}
                   </Row>
                 </Card>
